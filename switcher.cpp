@@ -33,6 +33,16 @@ bool checking_current_layout()
     else return true;
 }
 
+// Функция для проверки английской строки по словарю 
+ bool word_checking_US_Proto2(std::string str, std::string str3)
+ {
+     std::ifstream inputFile(PATH_EN2);
+
+    if (!inputFile.is_open()) {
+        std::cerr << "Не удалось открыть файл." << std::endl;
+        return 1;
+    }
+
 //функция смены языка
 void language(Display *display) {
     
