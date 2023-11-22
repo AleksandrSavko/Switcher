@@ -100,6 +100,31 @@ int copy_clipboard(std::string textTocopy, Display *display)
     
 }
 
+//функция вставки исправленной строки
+void paste_word(Display *display) {
+    
+    
+    KeyCode keycode_Control = XKeysymToKeycode(display, XK_Control_L);  
+    KeyCode keycode_V = XKeysymToKeycode(display, XK_V);
+    XTestFakeKeyEvent(display, keycode_Control, True, 0);
+    XTestFakeKeyEvent(display, keycode_V, True, 0); 
+    XTestFakeKeyEvent(display, keycode_Control, False, 0);
+    XTestFakeKeyEvent(display, keycode_V, False, 0);
+    XFlush(display);
+
+}
+
+//функция удаления неверного фрагмента
+void delete_word(Display *display, size_t count) {
+ 
+    for (size_t i = 0; i < count; i++)
+    {
+        KeyCode keycode = XKeysymToKeycode(display, XK_BackSpace); 
+        XTestFakeKeyEvent(display, keycode, True, 0);
+        XTestFakeKeyEvent(display, keycode, False, 0);
+        XFlush(display);
+    }
+}
 // Функция для замены английских букв на русские 
 std::string replaceEnglishWithRussian(const std::string& input, const std::unordered_map<char, std::string>& keymap) {
     std::string result = input;
