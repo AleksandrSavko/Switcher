@@ -57,6 +57,15 @@ void language(Display *display) {
 
 }
 
+//Функция записи исправленной строки в буфер обмена
+int copy_clipboard(std::string textTocopy, Display *display) 
+{
+    std::string command = "echo '" + textTocopy + "' | xclip -selection clipboard";
+    std::system(command.c_str());
+    return 0;
+    
+}
+
 // Функция для замены английских букв на русские 
 std::string replaceEnglishWithRussian(const std::string& input, const std::unordered_map<char, std::string>& keymap) {
     std::string result = input;
