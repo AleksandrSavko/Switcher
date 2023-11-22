@@ -33,6 +33,20 @@ bool checking_current_layout()
     else return true;
 }
 
+//функция смены языка
+void language(Display *display) {
+    
+    
+    KeyCode keycode_super = XKeysymToKeycode(display, XK_Super_L);  
+    KeyCode keycode_space = XKeysymToKeycode(display, XK_space);
+    XTestFakeKeyEvent(display, keycode_super, True, 0);
+    XTestFakeKeyEvent(display, keycode_space, True, 0); 
+    XTestFakeKeyEvent(display, keycode_super, False, 0);
+    XTestFakeKeyEvent(display, keycode_space, False, 0);
+    XFlush(display);
+
+}
+
 // Функция для замены английских букв на русские 
 std::string replaceEnglishWithRussian(const std::string& input, const std::unordered_map<char, std::string>& keymap) {
     std::string result = input;
