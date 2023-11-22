@@ -33,6 +33,20 @@ bool checking_current_layout()
     else return true;
 }
 
+// Функция для замены английских букв на русские 
+std::string replaceEnglishWithRussian(const std::string& input, const std::unordered_map<char, std::string>& keymap) {
+    std::string result = input;
+
+    for (size_t i = 0; i < result.length(); ++i) {
+        // Проверяем, есть ли текущий символ в keymap
+        char c = result[i];
+        if (keymap.find(c) != keymap.end()) {
+            // Если есть, заменяем его на соответствующую строку из keymap
+            result.replace(i, 1, keymap.at(c));
+        }
+    }
+    return result;
+}
 
 int main()
 {
