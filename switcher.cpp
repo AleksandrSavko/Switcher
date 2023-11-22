@@ -185,6 +185,13 @@ std::wstring replaceRussianWithEnglish(const std::wstring& input, const std::map
 
     return result;
 }
+
+ std::string erase (int i,std::string str)
+ {
+    if (i>=3) str.erase(0,1);
+    return str;
+ }
+
 int main()
 {
     // Создаем keymap для замены английских букв на русские
