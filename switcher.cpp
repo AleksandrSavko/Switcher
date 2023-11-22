@@ -1,3 +1,9 @@
+#define PATH_EN2 "/home/aleksandr/Рабочий стол/Курсовая работа/src/en/proto"
+#define PATH_EN3 "/home/aleksandr/Рабочий стол/Курсовая работа/src/en/proto3"
+#define PATH_RU2 "/home/aleksandr/Рабочий стол/Курсовая работа/src/ru/proto"
+#define PATH_RU3 "/home/aleksandr/Рабочий стол/Курсовая работа/src/ru/proto3"
+
+
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XInput2.h> 
@@ -343,3 +349,144 @@ int main()
     std::string resultENG;
     int flag_v =0;
     int flag_space =0;
+
+while (true) 
+    {
+        XEvent event;
+        XGenericEventCookie *cookie = (XGenericEventCookie*)&event.xcookie;
+        XNextEvent(disp, &event);
+        
+        if (checking_current_layout())
+        {
+            
+             if (XGetEventData(disp, cookie) &&
+                cookie->type == GenericEvent &&
+                cookie->extension == xiOpcode) 
+            {
+
+                if (cookie->evtype == XI_RawKeyPress) 
+                {
+                    XIRawEvent *ev = (XIRawEvent*)cookie->data;
+                    
+                    KeySym s = XkbKeycodeToKeysym(disp, ev->detail, 0, 0);
+                    if (NoSymbol == s) continue;
+
+                    char *str = XKeysymToString(s);
+                    if (NULL == str) continue;
+                    if (flag_space && strcmp(str,"space") ==0)
+                    {
+                        flag_space=0;
+                        continue;
+                    }
+                    if (flag_v && strcmp(str,"v") ==0)
+                    {
+                        flag_v=0;
+                        continue;
+                    }
+                    if (strcmp(str,"space") ==0 ) buffer.clear();
+
+                    auto it = keysymToTextEnglish.find(s);
+                    
+                    if (it != keysymToTextEnglish.end()) 
+                    {
+                        resultENG=it->second;
+                    } 
+                    buffer.append(resultENG); 
+                    bufferString.append(resultENG); 
+                    resultENG.clear();
+                    
+                    int counter=buffer.length();
+                    
+                    if (counter>=4) buffer.erase(0,(counter-3));
+                    if (word_checking_US_Proto2(erase(counter,buffer), buffer)==false) 
+                    {
+                        
+                        std::string result=replaceEnglishWithRussian(bufferString, keymap);
+                        delete_word(disp, bufferString.length());
+                        copy_clipboard(result,disp);
+                        paste_word(disp);
+                        language(disp);
+                        flag_space=1;
+                        flag_v=1;
+                        
+                        buffer.clear();
+                        bufferString.clear();
+                    }    
+                }
+            
+            }
+           
+        }
+        if  (!checking_current_layout())
+        {
+                
+             if (XGetEventData(disp, cookie) &&
+                cookie->type == GenericEvent &&
+                cookie->extension == xiOpcode) 
+            {
+
+                if (cookie->evtype == XI_RawKeyPress) 
+                {
+                    XIRawEvent *ev = (XIRawEvent*)cookie->data;
+                    
+                    KeySym space = XkbKeycodeToKeysym(disp, ev->detail, 0, 0);
+                    if (NoSymbol == space) continue;
+                    char *str = XKeysymToString(space);
+                    if (NULL == str) continue;
+                
+                    if (flag_space && strcmp(str,"space") ==0)
+                    {
+                        flag_space=0;
+                        continue;
+                    }
+                    if (flag_v && strcmp(str,"v") ==0)
+                    {
+                        flag_v=0;
+                        continue;
+                    }
+                                    
+                    if (strcmp(str,"space") ==0 ) 
+                    {
+                        bufferStringRus.append(" ");
+                        bufferRUS.clear();
+                    }
+
+                    KeySym s = XkbKeycodeToKeysym(disp, ev->detail, 1, 0);
+                    if (NoSymbol == s) continue;
+                    auto it = keysymToText.find(s);
+                    
+                    if (it != keysymToText.end()) 
+                    {
+                        resultRUS=it->second;
+                    }    
+                                    
+                    bufferRUS.append(resultRUS);
+                    bufferStringRus.append(resultRUS);
+
+                    int counter=bufferRUS.length();
+                    if (counter>=6) bufferRUS.erase(0,(counter-6));
+                    if (word_checking_RU_Proto2(erase(counter,bufferRUS), bufferRUS)==false) 
+                    {
+                        std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+                        std::wstring wide_str = converter.from_bytes(bufferStringRus);
+                        std::wstring temorary_result=replaceRussianWithEnglish(wide_str, keyboardMapping);
+                        std::string result = converter.to_bytes(temorary_result);
+
+                        delete_word(disp, (bufferStringRus.length()/2));                    
+                        copy_clipboard(result,disp);
+                        paste_word(disp);
+                        language(disp);
+                        flag_space=1;
+                        flag_v=1;
+                        
+                        bufferRUS.clear();
+                        bufferStringRus.clear();
+                        
+                    }
+                
+                }
+            
+            }
+        }
+    }    
+}
