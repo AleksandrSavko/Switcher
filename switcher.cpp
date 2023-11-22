@@ -62,6 +62,21 @@ std::string replaceEnglishWithRussian(const std::string& input, const std::unord
     return result;
 }
 
+// Функция для замены русских букв на английские 
+std::wstring replaceRussianWithEnglish(const std::wstring& input, const std::map<wchar_t, wchar_t>& charMap) {
+    std::wstring result;
+
+    for (wchar_t c : input) {
+        auto it = charMap.find(c);
+        if (it != charMap.end()) {
+            result += it->second;
+        } else {
+            result += c;
+        }
+    }
+
+    return result;
+}
 int main()
 {
     // Создаем keymap для замены английских букв на русские
