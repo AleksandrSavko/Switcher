@@ -18,6 +18,22 @@
 #include <codecvt>
 #include <locale>
 
+//функция проверки текущей раскладки клавиатуры
+bool checking_current_layout()
+{
+    int result;
+    char *language;
+    auto display = XkbOpenDisplay( getenv( "DISPLAY" ), NULL, NULL, NULL, NULL, &result );
+    auto keyboard = XkbAllocKeyboard();
+    XkbGetNames( display, XkbGroupNamesMask, keyboard );
+    XkbStateRec state;
+    XkbGetState( display, XkbUseCoreKbd, &state );
+    language=XGetAtomName(display, keyboard->names->groups[state.group]);
+    if (strcmp(language,"Russian") ==0 ) return false;
+    else return true;
+}
+
+
 int main()
 {
     // Создаем keymap для замены английских букв на русские
