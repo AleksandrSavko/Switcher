@@ -33,6 +33,40 @@ bool checking_current_layout()
     else return true;
 }
 
+// Функция для проверки русской строки по словарю 
+ bool word_checking_RU_Proto2(std::string str, std::string str3)
+ {
+     std::ifstream inputFile(PATH_RU2);
+
+    if (!inputFile.is_open()) {
+        std::cerr << "Не удалось открыть файл." << std::endl;
+        return 1;
+    }
+
+    std::string line;
+
+    while (std::getline(inputFile, line)) {
+       if (line.compare(str)==0) return false;
+    }
+    inputFile.close();
+
+    std::ifstream inputFile3(PATH_RU3);
+
+    if (!inputFile3.is_open()) {
+        std::cerr << "Не удалось открыть файл." << std::endl;
+        return 1;
+    }
+
+    std::string line3;
+
+    while (std::getline(inputFile3, line3)) {
+       if (line3.compare(str3)==0) return false;
+    }
+    inputFile3.close();
+
+    return true;
+ }
+
 // Функция для проверки английской строки по словарю 
  bool word_checking_US_Proto2(std::string str, std::string str3)
  {
