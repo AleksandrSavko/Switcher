@@ -83,6 +83,30 @@ bool checking_current_layout()
         return 1;
     }
 
+    std::string line;
+
+    while (std::getline(inputFile, line)) {
+       if (line.compare(str)==0) return false;
+    }
+    inputFile.close();
+
+    std::ifstream inputFile3(PATH_EN3);
+
+    if (!inputFile3.is_open()) {
+        std::cerr << "Не удалось открыть файл." << std::endl;
+        return 1;
+    }
+
+    std::string line3;
+
+    while (std::getline(inputFile3, line3)) {
+       if (line3.compare(str3)==0) return false;
+    }
+    inputFile3.close();
+
+    return true;
+ }
+
 //функция смены языка
 void language(Display *display) {
     
